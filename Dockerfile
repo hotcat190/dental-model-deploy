@@ -1,13 +1,13 @@
 # 1. Base Image: Use slim Python 3.10
 # Note: If you eventually use GPU, you must switch this to a CUDA-enabled base image.
 # For now (CPU inference), this is the most efficient choice.
-FROM python:3.10-slim
+FROM python:3.11.13-slim
 
 # 2. System Dependencies (Crucial Step)
 # - libgl1 & libglib2.0: Required by OpenCV/image processing libraries often pulled in by scikit-image
 # - build-essential: Sometimes needed to compile Python extensions (like numpy/scipy) if wheels aren't found
 RUN apt-get update && apt-get install -y \
-    libgl1-mesa-glx \
+    libgl1 \
     libglib2.0-0 \
     build-essential \
     && rm -rf /var/lib/apt/lists/*

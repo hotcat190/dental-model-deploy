@@ -1,4 +1,5 @@
 import io
+import os
 import tensorflow as tf
 import numpy as np
 import trimesh
@@ -36,11 +37,10 @@ app = FastAPI(lifespan=lifespan)
 
 @app.get("/")
 def health_check():
-    return {"status": "running", "model_loaded": model is not None}
+    return {"status": "running", "model_loaded": "dental_model" in ml_models}
 
 @app.post("/predict")
 async def predict(files: List[UploadFile] = File(...)):
-    global model
     if len(files) != 4:
         raise HTTPException(status_code=400, detail="Endpoint requires exactly 4 PNG images.")
     
@@ -88,7 +88,7 @@ async def predict(files: List[UploadFile] = File(...)):
         mesh.export(file_stream, file_type='stl')
         file_stream.seek(0) # Reset pointer to start of file
         
-        filename = "dental_model.stl"
+        filename = "3d_dental_model.stl"
         
     except ValueError:
         # This happens if the model predicts empty space (no teeth found)
